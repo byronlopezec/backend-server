@@ -4,6 +4,7 @@
   "description": "Servidor Backend del curso de Angular 2+ Avanzado",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
