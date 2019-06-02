@@ -1,5 +1,6 @@
 var express = require("express");
 var usuarioModel = require("../models/usuario");
+var bcrypt = require("bcryptjs");
 
 var app = new express();
 
@@ -23,7 +24,7 @@ app.get("/", (request, response, next) => {
 // ========== *** Agregar nuevo usuario ***
 app.post("/", (request, response, next) => {
   var body = request.body;
-  var usuario = new usuarioModel(({ nombre, email, password, img, role } = body));
+  var usuario = new usuarioModel({ ...body, password: bcrypt.hashSync(body.password, 10) });
 
   usuario.save((err, usuarioSaved) => {
     if (err) {
