@@ -1,15 +1,16 @@
 var express = require("express");
-var usuarios = require("../modules/usuario");
+var usuarioModel = require("../models/usuario");
 
 var app = new express();
 
+// ========== *** Obtener lista de usuarios ***
 app.get("/", (request, response, next) => {
-  usuarios.find({}, "nombre email img role").exec((err, res) => {
+  usuarioModel.find({}, "nombre email img role").exec((err, res) => {
     if (err) {
       return response.status(500).json({
         ok: false,
         message: "Error cargando usuario",
-        errors: err
+        err
       });
     }
     response.status(200).json({
@@ -18,4 +19,23 @@ app.get("/", (request, response, next) => {
   });
 });
 
+// ========== *** Agregar nuevo usuario ***
+app.post("/", (request, response, next) => {
+  var body = request.body;
+  var usuario = new usuarioModel(({ nombre, email, password, img, role } = body));
+
+  usuario.save((err, usuarioSaved) => {
+    if (err) {
+      return response.status(500).json({
+        ok: false,
+        errors: err
+      });
+    }
+
+    response.status(201).json({
+      ok: true,
+      body: usuarioSaved
+    });
+  });
+});
 module.exports = app;
