@@ -4,7 +4,7 @@
 // ========== *** Importar librerias ***
 var express = require("express");
 var mongosse = require("mongoose");
-var bodyParser = require("body-parser");
+var bodyParser = require("body-parser"); // ========== *** https://www.npmjs.com/package/body-parser ***
 
 // ========== *** iniciar variables ***
 var app = new express();

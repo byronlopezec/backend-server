@@ -13,6 +13,7 @@ app.get("/", (request, response, next) => {
         err
       });
     }
+
     response.status(200).json({
       usuarios: res
     });
@@ -26,9 +27,9 @@ app.post("/", (request, response, next) => {
 
   usuario.save((err, usuarioSaved) => {
     if (err) {
-      return response.status(500).json({
+      return response.status(400).json({
         ok: false,
-        errors: err
+        ...err
       });
     }
 
@@ -38,4 +39,5 @@ app.post("/", (request, response, next) => {
     });
   });
 });
+
 module.exports = app;
