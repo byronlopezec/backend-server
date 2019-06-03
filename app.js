@@ -33,6 +33,7 @@ var appRoutes = require("./routes/app");
 var loginRoutes = require("./routes/login");
 var usuarioRoutes = require("./routes/usuario");
 var hospitalRoutes = require("./routes/hospital");
+var medicosRoutes = require("./routes/medico");
 
 // ========== *** Connect a mongoDB ***
 mongosse.connect("mongodb://localhost:27017/hospitalDB", options, (err, conn) => {
@@ -45,6 +46,7 @@ mongosse.connect("mongodb://localhost:27017/hospitalDB", options, (err, conn) =>
 });
 
 // ========== *** RUTAS ***
+app.use("/medicos", medicosRoutes);
 app.use("/hospitales", hospitalRoutes);
 app.use("/usuarios", usuarioRoutes);
 app.use("/login", loginRoutes);
