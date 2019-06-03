@@ -1,9 +1,7 @@
 var express = require("express");
 var usuarioModel = require("../models/usuario");
 var bcrypt = require("bcryptjs"); // ========== *** https://www.npmjs.com/package/bcryptjs ***
-
-var jwt = require("jsonwebtoken"); //  DOC: https://www.npmjs.com/package/jsonwebtoken
-var SEED_SECRET = require("../config/config").SEED;
+var autenticacion = require("../middleware/autenticacion");
 
 var app = new express();
 
@@ -25,20 +23,24 @@ app.get("/", (request, response, next) => {
 });
 
 // ========== *** Middleware Token para peticiones POST,PUT y DELETE ***
-app.use("/", (request, response, next) => {
-  var token = request.query.token;
+/**
+ * app.use se llama por por encima de las funciones
+ * que necesitan verificar valides del token
+ */
+// app.use("/", (request, response, next) => {
+//   var token = request.query.token;
 
-  jwt.verify(token, SEED_SECRET, (errors, responsePermited) => {
-    if (errors) {
-      response.status(401).json({ ok: false, mensaje: "Token no valido", errors });
-    }
+//   jwt.verify(token, SEED_SECRET, (errors, responsePermited) => {
+//     if (errors) {
+//       response.status(401).json({ ok: false, mensaje: "Token no valido", errors });
+//     }
 
-    next();
-  });
-});
+//     next();
+//   });
+// });
 
 // ========== *** Agregar nuevo usuario ***
-app.post("/", (request, response, next) => {
+app.post("/", autenticacion.verificarToken, (request, response, next) => {
   var body = request.body;
   // TODO: Validar password undefined!!!
   var usuario = new usuarioModel({ ...body, password: bcrypt.hashSync(body.password, 10) });
@@ -47,13 +49,16 @@ app.post("/", (request, response, next) => {
     if (err) {
       return response.status(400).json({ ok: false, ...err });
     }
+    usuarioSaved.password = "Mipassswordsecret";
 
-    response.status(201).json({ ok: true, body: usuarioSaved });
+    response
+      .status(201)
+      .json({ ok: true, usuario: usuarioSaved, usuarioToken: request.usuarioToken });
   });
 });
 
 // ========== *** Actualizar usuario ***
-app.put("/:id", (request, response) => {
+app.put("/:id", autenticacion.verificarToken, (request, response) => {
   var id = request.params.id;
 
   usuarioModel.findById(id, "nombre email role", (err, usuarioFound) => {
@@ -76,14 +81,15 @@ app.put("/:id", (request, response) => {
           .status(400)
           .json({ ok: false, message: "Error al actualizar usuario", err });
       }
+      var usuarioToken = request.usuarioToken;
 
-      response.status(200).json({ ok: true, body: usuarioGuardado });
+      response.status(200).json({ ok: true, body: usuarioGuardado, usuarioToken });
     });
   });
 });
 
 // ========== *** Borrar usuario ***
-app.delete("/:id", (request, response) => {
+app.delete("/:id", autenticacion.verificarToken, (request, response) => {
   var id = request.params.id;
 
   usuarioModel.findByIdAndDelete(id, (err, usuarioBorrado) => {
@@ -103,7 +109,9 @@ app.delete("/:id", (request, response) => {
       });
     }
 
-    response.status(200).json({ ok: true, usuario: usuarioBorrado });
+    var usuarioToken = request.usuarioToken;
+
+    response.status(200).json({ ok: true, usuario: usuarioBorrado, usuarioToken });
   });
 });
 

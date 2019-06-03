@@ -27,9 +27,10 @@ app.post("/", (request, response) => {
         .status(400)
         .json({ ok: false, errors: { message: "Credenciales incorrectas - password" } });
     }
+    // ========== *** Ocultar password ***
+    usuarioFound.password = "Mipassswordsecret";
 
     // ========== *** Generar un token ***
-
     var token = jwt.sign({ usuario: usuarioFound }, SEED_SECRET, { expiresIn: 3600 });
 
     response
