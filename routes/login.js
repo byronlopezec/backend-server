@@ -1,5 +1,6 @@
 var express = require("express");
-var bcrypt = require("bcryptjs");
+var bcrypt = require("bcryptjs"); // DOC: https://www.npmjs.com/package/bcryptjs
+var jwt = require("jsonwebtoken"); //  DOC: https://www.npmjs.com/package/jsonwebtoken
 var usuarioModel = require("../models/usuario");
 
 var app = new express();
@@ -25,7 +26,13 @@ app.post("/", (request, response) => {
         .json({ ok: false, errors: { message: "Credenciales incorrectas - password" } });
     }
 
-    response.status(200).json({ ok: true, token: "Usted tendria un token!!", body });
+    // ========== *** Generar un token ***
+
+    var token = jwt.sign({ usuario: usuarioFound }, "Mi-SEED-privado@", { expiresIn: 3600 });
+
+    response
+      .status(200)
+      .json({ ok: true, usuario: usuarioFound, token: token, id: usuarioFound._id });
   });
 });
 
