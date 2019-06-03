@@ -2,6 +2,9 @@ var express = require("express");
 var usuarioModel = require("../models/usuario");
 var bcrypt = require("bcryptjs"); // ========== *** https://www.npmjs.com/package/bcryptjs ***
 
+var jwt = require("jsonwebtoken"); //  DOC: https://www.npmjs.com/package/jsonwebtoken
+var SEED_SECRET = require("../config/config").SEED;
+
 var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
@@ -18,6 +21,19 @@ app.get("/", (request, response, next) => {
     response.status(200).json({
       usuarios: res
     });
+  });
+});
+
+// ========== *** Middleware Token para peticiones POST,PUT y DELETE ***
+app.use("/", (request, response, next) => {
+  var token = request.query.token;
+
+  jwt.verify(token, SEED_SECRET, (errors, responsePermited) => {
+    if (errors) {
+      response.status(401).json({ ok: false, mensaje: "Token no valido", errors });
+    }
+
+    next();
   });
 });
 

@@ -1,7 +1,9 @@
 var express = require("express");
 var bcrypt = require("bcryptjs"); // DOC: https://www.npmjs.com/package/bcryptjs
-var jwt = require("jsonwebtoken"); //  DOC: https://www.npmjs.com/package/jsonwebtoken
 var usuarioModel = require("../models/usuario");
+
+var jwt = require("jsonwebtoken"); //  DOC: https://www.npmjs.com/package/jsonwebtoken
+var SEED_SECRET = require("../config/config").SEED;
 
 var app = new express();
 
@@ -28,7 +30,7 @@ app.post("/", (request, response) => {
 
     // ========== *** Generar un token ***
 
-    var token = jwt.sign({ usuario: usuarioFound }, "Mi-SEED-privado@", { expiresIn: 3600 });
+    var token = jwt.sign({ usuario: usuarioFound }, SEED_SECRET, { expiresIn: 3600 });
 
     response
       .status(200)
