@@ -1,6 +1,6 @@
 // iniciar servidor Con nodemon: installarlo> npm install -g nodemon
 // nodemon app.js
-
+var color = require("colors"); // http://voidcanvas.com/make-console-log-output-colorful-and-stylish-in-browser-node/
 // ========== *** Importar librerias ***
 var express = require("express");
 var mongosse = require("mongoose");
@@ -29,20 +29,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // ========== *** Importar Rutas ***
-var usuarioRoutes = require("./routes/usuario");
 var appRoutes = require("./routes/app");
+var usuarioRoutes = require("./routes/usuario");
+var loginRoutes = require("./routes/login");
 
 // ========== *** Connect a mongoDB ***
 mongosse.connect("mongodb://localhost:27017/hospitalDB", options, (err, conn) => {
   if (err) throw error;
-  console.log("Conexion con la base de datos en el puerto\x1b[32m %s \x1b[0m%s", "27017", "online");
+  console.log(
+    "Conexion a la Database en el puerto\x1b[32m %s \x1b[0m%s".cyan,
+    "27017".white,
+    "online".yellow
+  );
 });
 
 // ========== *** RUTAS ***
 app.use("/usuarios", usuarioRoutes);
+app.use("/login", loginRoutes);
 app.use("/", appRoutes);
 
 // ========== *** Escuchar Peticiones ***
 app.listen(3000, "localhost", () => {
-  console.log("Express Server puerto\x1b[32m %s \x1b[0m%s", "3000", "online");
+  console.log("Express Server puerto".cyan, "3000".white, "online".yellow);
 });
