@@ -7,19 +7,23 @@ var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
 app.get("/", (request, response, next) => {
-  medicoModel.find({}, "nombre usuario medico").exec((err, res) => {
-    if (err) {
-      return response.status(500).json({
-        ok: false,
-        message: "Error cargando medico",
-        err
-      });
-    }
+  medicoModel
+    .find({}, "nombre usuario hospital")
+    .populate("usuario", "nombre email")
+    .populate("hospital")
+    .exec((err, res) => {
+      if (err) {
+        return response.status(500).json({
+          ok: false,
+          message: "Error cargando medico",
+          err
+        });
+      }
 
-    response.status(200).json({
-      medicos: res
+      response.status(200).json({
+        medicos: res
+      });
     });
-  });
 });
 
 // ========== *** Middleware Token para peticiones POST,PUT y DELETE ***
