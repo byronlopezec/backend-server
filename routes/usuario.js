@@ -7,19 +7,33 @@ var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
 app.get("/", (request, response, next) => {
-  usuarioModel.find({}, "nombre email img role").exec((err, res) => {
-    if (err) {
-      return response.status(500).json({
-        ok: false,
-        message: "Error cargando usuario",
-        err
-      });
-    }
+  var desde = request.query.desde || 0; // si es undefined tomar 0 de valor
+  desde = Number(desde);
 
-    response.status(200).json({
-      usuarios: res
+  var limit = request.query.limit || 0;
+  limit = Number(limit);
+
+  usuarioModel
+    .find({}, "nombre email img role")
+    .skip(desde)
+    .limit(limit)
+    .exec((err, res) => {
+      if (err) {
+        return response.status(500).json({
+          ok: false,
+          message: "Error cargando usuario",
+          err
+        });
+      }
+
+      // ========== *** collection.count() deprecated , contar total registros de la tabla ***
+      usuarioModel.countDocuments({}, (err, count) => {
+        response.status(200).json({
+          usuarios: res,
+          total: count
+        });
+      });
     });
-  });
 });
 
 // ========== *** Middleware Token para peticiones POST,PUT y DELETE ***

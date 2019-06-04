@@ -7,8 +7,16 @@ var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
 app.get("/", (request, response, next) => {
+  var desde = request.query.desde || 0;
+  desde = Number(desde);
+
+  var limit = request.query.limit || 0;
+  limit = Number(limit);
+
   hospitalModel
     .find({}, "nombre usuario")
+    .skip(desde)
+    .limit(limit)
     .populate("usuario", "nombre email")
     .exec((err, res) => {
       if (err) {
@@ -19,8 +27,11 @@ app.get("/", (request, response, next) => {
         });
       }
 
-      response.status(200).json({
-        hospitales: res
+      hospitalModel.countDocuments({}, (err, count) => {
+        response.status(200).json({
+          hospitales: res,
+          total: count
+        });
       });
     });
 });
