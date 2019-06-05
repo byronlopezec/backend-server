@@ -5,6 +5,32 @@ var medicoModel = require("../models/medico");
 
 var app = new express();
 
+// ========== *** Busqueda por coleccion ***
+
+app.get("/coleccion/:tabla/:busqueda", (request, response) => {
+  var tabla = request.params.tabla;
+  var busqueda = request.params.busqueda;
+  var regexBusqueda = new RegExp(busqueda, "i");
+
+  if (tabla === "usuario") {
+    buscarUsuarios(busqueda, regexBusqueda).then(usuarios => {
+      response.status(200).json({ ok: true, usuarios });
+    });
+  }
+
+  if (tabla === "medico") {
+    buscarMedicos(busqueda, regexBusqueda).then(medicos => {
+      response.status(200).json({ ok: true, medicos });
+    });
+  }
+
+  if (tabla === "hospital") {
+    buscarHospitales(busqueda, regexBusqueda).then(hospitales => {
+      response.status(200).json({ ok: true, hospitales });
+    });
+  }
+});
+
 app.get("/toda/:busqueda", (request, response, next) => {
   var busqueda = request.params.busqueda;
   var regexBusqueda = new RegExp(busqueda, "i");
