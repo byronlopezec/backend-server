@@ -12,23 +12,33 @@ app.get("/coleccion/:tabla/:busqueda", (request, response) => {
   var busqueda = request.params.busqueda;
   var regexBusqueda = new RegExp(busqueda, "i");
 
-  if (tabla === "usuario") {
-    buscarUsuarios(busqueda, regexBusqueda).then(usuarios => {
-      response.status(200).json({ ok: true, usuarios });
-    });
+  var promesa;
+
+  switch (tabla.toLowerCase()) {
+    case "usuarios":
+      promesa = buscarUsuarios(busqueda, regexBusqueda);
+      break;
+    case "medicos":
+      promesa = buscarMedicos(busqueda, regexBusqueda);
+      break;
+    case "hospitales":
+      promesa = buscarHospitales(busqueda, regexBusqueda);
+      break;
+
+    default:
+      return response.status(400).json({
+        ok: false,
+        mensaje: "Solo se permite buscar tablas entre usuarios,medicos y hospitales",
+        errors: { message: "Ninguna coleccion/tabla encontrada" }
+      });
   }
 
-  if (tabla === "medico") {
-    buscarMedicos(busqueda, regexBusqueda).then(medicos => {
-      response.status(200).json({ ok: true, medicos });
+  promesa.then(resultado => {
+    response.status(200).json({
+      ok: true,
+      [tabla]: resultado
     });
-  }
-
-  if (tabla === "hospital") {
-    buscarHospitales(busqueda, regexBusqueda).then(hospitales => {
-      response.status(200).json({ ok: true, hospitales });
-    });
-  }
+  });
 });
 
 app.get("/toda/:busqueda", (request, response, next) => {
