@@ -4,7 +4,10 @@ var fileUpload = require("express-fileupload");
 var app = new express();
 app.use(fileUpload());
 
-app.put("/", (request, response) => {
+app.put("/:tabla/:id", (request, response) => {
+  var tabla = request.params.tabla;
+  var id = request.params.id;
+
   if (!request.files) {
     return response.status(400).json({ ok: false, message: "Ningún archivo seleccionado" });
   }
@@ -22,11 +25,20 @@ app.put("/", (request, response) => {
       errors: { message: `Solo se permite las extensiones ${extensionesPermitidas.join(", ")}` }
     });
 
-  response.status(200).json({
-    ok: true,
-    message: "Archivo subido con éxito",
-    imagen: nombreCompleto,
-    extensionArchivo
+  // ========== *** Nombre del archivo diferente para cada usuario ***
+  var nombreArchivo = `${id}-${new Date().getMilliseconds()}.${extensionArchivo}`;
+  // ========== *** Path donde guardar el archivo ***
+  var path = `./uploads/${tabla}/${nombreArchivo}`;
+
+  archivo.mv(path, errors => {
+    if (errors) {
+      return response.status(400).json({ ok: false, mensaje: "", errors });
+    }
+
+    response.status(200).json({
+      ok: true,
+      message: "Archivo subido con éxito"
+    });
   });
 });
 
