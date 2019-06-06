@@ -6,7 +6,7 @@ var autenticacion = require("../middleware/autenticacion");
 var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
-app.get("/", (request, response, next) => {
+app.get("/", (request, response) => {
   var desde = request.query.desde || 0; // si es undefined tomar 0 de valor
   desde = Number(desde);
 
@@ -54,7 +54,7 @@ app.get("/", (request, response, next) => {
 // });
 
 // ========== *** Agregar nuevo usuario ***
-app.post("/", autenticacion.verificarToken, (request, response, next) => {
+app.post("/", autenticacion.verificarToken, (request, response) => {
   var body = request.body;
   // TODO: Validar password undefined!!!
   var usuario = new usuarioModel({ ...body, password: bcrypt.hashSync(body.password, 10) });

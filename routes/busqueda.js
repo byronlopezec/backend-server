@@ -1,5 +1,5 @@
 var express = require("express");
-var hospitalModel = require("../models/hopital");
+var hospitalModel = require("../models/hospital");
 var usuarioModel = require("../models/usuario");
 var medicoModel = require("../models/medico");
 
@@ -41,7 +41,7 @@ app.get("/coleccion/:tabla/:busqueda", (request, response) => {
   });
 });
 
-app.get("/toda/:busqueda", (request, response, next) => {
+app.get("/toda/:busqueda", (request, response) => {
   var busqueda = request.params.busqueda;
   var regexBusqueda = new RegExp(busqueda, "i");
 

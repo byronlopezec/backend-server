@@ -1,12 +1,11 @@
 var express = require("express");
 var medicoModel = require("../models/medico");
-var bcrypt = require("bcryptjs"); // ========== *** https://www.npmjs.com/package/bcryptjs ***
 var autenticacion = require("../middleware/autenticacion");
 
 var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
-app.get("/", (request, response, next) => {
+app.get("/", (request, response) => {
   var desde = request.query.desde || 0;
   desde = Number(desde);
   var limit = request.query.limit || 0;
@@ -55,7 +54,7 @@ app.get("/", (request, response, next) => {
 // });
 
 // ========== *** Agregar nuevo usuario ***
-app.post("/", autenticacion.verificarToken, (request, response, next) => {
+app.post("/", autenticacion.verificarToken, (request, response) => {
   var body = request.body;
 
   var medico = new medicoModel({ ...body, usuario: request.usuarioToken._id });

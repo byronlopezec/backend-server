@@ -1,12 +1,11 @@
 var express = require("express");
-var hospitalModel = require("../models/hopital");
-var bcrypt = require("bcryptjs"); // ========== *** https://www.npmjs.com/package/bcryptjs ***
+var hospitalModel = require("../models/hospital");
 var autenticacion = require("../middleware/autenticacion");
 
 var app = new express();
 
 // ========== *** Obtener lista de usuarios ***
-app.get("/", (request, response, next) => {
+app.get("/", (request, response) => {
   var desde = request.query.desde || 0;
   desde = Number(desde);
 
@@ -54,7 +53,7 @@ app.get("/", (request, response, next) => {
 // });
 
 // ========== *** Agregar nuevo usuario ***
-app.post("/", autenticacion.verificarToken, (request, response, next) => {
+app.post("/", autenticacion.verificarToken, (request, response) => {
   var body = request.body;
 
   var hospital = new hospitalModel({ ...body, usuario: request.usuarioToken._id });

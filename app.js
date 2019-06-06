@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 // iniciar servidor Con nodemon: installarlo> npm install -g nodemon
 // nodemon app.js
+// eslint-disable-next-line no-unused-vars
 var color = require("colors"); // http://voidcanvas.com/make-console-log-output-colorful-and-stylish-in-browser-node/
 // ========== *** Importar librerias ***
 var express = require("express");
@@ -38,8 +40,8 @@ var busquedaRoutes = require("./routes/busqueda");
 var uploadRoutes = require("./routes/upload");
 
 // ========== *** Connect a mongoDB ***
-mongosse.connect("mongodb://localhost:27017/hospitalDB", options, (err, conn) => {
-  if (err) throw error;
+mongosse.connect("mongodb://localhost:27017/hospitalDB", options, err => {
+  if (err) throw err;
   console.log(
     "Conexion a la Database en el puerto\x1b[32m %s \x1b[0m%s".cyan,
     "27017".white,
