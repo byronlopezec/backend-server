@@ -35,6 +35,7 @@ var usuarioRoutes = require("./routes/usuario");
 var hospitalRoutes = require("./routes/hospital");
 var medicosRoutes = require("./routes/medico");
 var busquedaRoutes = require("./routes/busqueda");
+var uploadRoutes = require("./routes/upload");
 
 // ========== *** Connect a mongoDB ***
 mongosse.connect("mongodb://localhost:27017/hospitalDB", options, (err, conn) => {
@@ -47,6 +48,7 @@ mongosse.connect("mongodb://localhost:27017/hospitalDB", options, (err, conn) =>
 });
 
 // ========== *** RUTAS ***
+app.use("/upload", uploadRoutes);
 app.use("/busqueda", busquedaRoutes);
 app.use("/medicos", medicosRoutes);
 app.use("/hospitales", hospitalRoutes);
