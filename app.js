@@ -49,6 +49,11 @@ mongosse.connect("mongodb://localhost:27017/hospitalDB", options, err => {
   );
 });
 
+// ========== *** Server index para publicar carpetas y archivos disponbiles ***
+// var serveIndex = require("serve-index");
+// app.use(express.static(__dirname + "/"));
+// app.use("/uploads", serveIndex(__dirname + "/uploads"));
+
 // ========== *** RUTAS ***
 app.use("/upload", uploadRoutes);
 app.use("/busqueda", busquedaRoutes);
