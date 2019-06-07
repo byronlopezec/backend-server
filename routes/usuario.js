@@ -57,7 +57,7 @@ app.get("/", (request, response) => {
 app.post("/", autenticacion.verificarToken, (request, response) => {
   var body = request.body;
   // TODO: Validar password undefined!!!
-  var usuario = new usuarioModel({ ...body, password: bcrypt.hashSync(body.password, 10) });
+  var usuario = new usuarioModel({ ...body, password: bcrypt.hashSync(body.password || "", 10) });
 
   usuario.save((err, usuarioSaved) => {
     if (err) {

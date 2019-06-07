@@ -15,7 +15,8 @@ var usuarioSchema = new Schema({
     required: true,
     default: "USER_ROLE",
     enum: { values: ["ADMIN_ROLE", "USER_ROLE"], message: "{VALUE} no es un role permitido" }
-  }
+  },
+  google: { type: Boolean, required: false, default: false }
 });
 usuarioSchema.plugin(uniqueValidator, { message: "{PATH} ya existe" });
 
